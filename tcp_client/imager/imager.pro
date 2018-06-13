@@ -8,13 +8,18 @@ QMAKE_CXXFLAGS += --pedantic
 DESTDIR = ../bin
 
 HEADERS += \
-    lib/Resize_image_dialog.hpp \
-    lib/Resize_image_widget.hpp \
-    lib/Transmit_image_dialog.hpp \
-    lib/Common_facilities.hpp
+    imager_lib/Resize_image_dialog.hpp \
+    imager_lib/Resize_image_widget.hpp \
+    imager_lib/Transmit_image_dialog.hpp \
+    ../../common_lib/Common_facilities.hpp \
+    ../../common_lib/Protocol.hpp
 
-SOURCES += \
-    lib/Resize_image_dialog.cpp \
-    lib/Resize_image_widget.cpp \
-    lib/Transmit_image_dialog.cpp \
-    lib/Common_facilities.cpp
+
+SOURCES += \    
+    main.cpp \
+    imager_lib/Resize_image_dialog.cpp \
+    imager_lib/Resize_image_widget.cpp \
+    imager_lib/Transmit_image_dialog.cpp \
+    ../../common_lib/Common_facilities.cpp \
+    ../../common_lib/Protocol.cpp
+
