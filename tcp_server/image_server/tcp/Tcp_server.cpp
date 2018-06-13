@@ -30,11 +30,11 @@ bool Tcp_server::listen(const QHostAddress& address, quint16 port)
     connections = new Tcp_connections();
 
     connect(thread, &QThread::started,
-            connections, &Tcp_connections::start, Qt::QueuedConnection);
+            connections, &Tcp_connections::start_cb, Qt::QueuedConnection);
     connect(this, &Tcp_server::accepting,
-            connections, &Tcp_connections::accept, Qt::QueuedConnection);
+            connections, &Tcp_connections::accept_cb, Qt::QueuedConnection);
     connect(this, &Tcp_server::finished,
-            connections, &Tcp_connections::quit, Qt::QueuedConnection);
+            connections, &Tcp_connections::quit_cb, Qt::QueuedConnection);
     connect(connections, &Tcp_connections::finished,
             this, &Tcp_server::complete_cb, Qt::QueuedConnection);
 
@@ -73,7 +73,6 @@ qint64 Tcp_server::port()
 void Tcp_server::incomingConnection(qintptr descriptor)
 {
     qDebug() << this << "attempting to accept connection" << descriptor;
-    Tcp_connecton* connection = new Tcp_connecton();
     accept(descriptor);
 
 }

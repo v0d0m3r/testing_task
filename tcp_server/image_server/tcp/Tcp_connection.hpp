@@ -27,10 +27,8 @@ public:
 
     virtual ~Tcp_connecton();
 
-    virtual void set_socket(QTcpSocket* socket);
-
 protected:
-    std::unique_ptr<QTcpSocket>& get_socket() const;
+    QTcpSocket* get_socket() const;
 
 public slots:
     virtual void connected_cb();
@@ -38,7 +36,7 @@ public slots:
     virtual void ready_read_cb();
     virtual void bytes_written_cb(qint64 bytes);
     virtual void state_changed_cb(QAbstractSocket::SocketState socketState);
-    virtual void error(QAbstractSocket::SocketError socketError);
+    virtual void error_cb(QAbstractSocket::SocketError socketError);
 
 private:
     QDataStream in;

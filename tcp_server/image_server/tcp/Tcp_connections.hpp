@@ -29,20 +29,20 @@ public:
 
 protected:
     QMap<qintptr, Tcp_connecton> connections;
-    void removeSocket(QTcpSocket *socket);
+    void remove_socket(QTcpSocket* socket);
 
 signals:
     void quitting();
     void finished();
 
 protected slots:
-    void disconnected();
-    void error(QAbstractSocket::SocketError socketError);
+    void disconnected_cb();
+    void error_cb(QAbstractSocket::SocketError socket_error);
 
 public slots:
-    void start();
-    void quit();
-    void accept(qintptr handle, Tcp_connecton *connection);
+    void start_cb();
+    void quit_cb();
+    void accept_cb(qintptr handle, Tcp_connecton *connection);
 };
 
 //------------------------------------------------------------------------------

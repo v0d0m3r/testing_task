@@ -30,15 +30,14 @@ int Tcp_connections::count()
 
 //------------------------------------------------------------------------------
 
-void Tcp_connections::removeSocket(QTcpSocket* socket)
+void Tcp_connections::remove_socket(QTcpSocket* socket)
 {
     if(!socket) return;
     if(!connections.contains(socket)) return;
 
     qDebug() << this << "removing socket = " <<  socket;
 
-    if(socket->isOpen())
-    {
+    if(socket->isOpen()) {
         qDebug() << this << "socket is open, attempting to close it " << socket;
         socket->disconnect();
         socket->close();
@@ -62,7 +61,7 @@ void Tcp_connections::disconnected()
     QTcpSocket* socket = static_cast<QTcpSocket*>(sender());
     if(!socket) return;
 
-    removeSocket(socket);
+    remove_socket(socket);
 }
 
 //------------------------------------------------------------------------------
@@ -75,7 +74,7 @@ void Tcp_connections::error(QAbstractSocket::SocketError socketError)
     QTcpSocket* socket = static_cast<QTcpSocket*>(sender());
     if(!socket) return;
 
-    removeSocket(socket);
+    remove_socket(socket);
 }
 
 //------------------------------------------------------------------------------
@@ -92,10 +91,9 @@ void Tcp_connections::quit()
     if(!sender()) return;
     qDebug() << this << "connections quitting";
 
-    foreach(QTcpSocket* socket, connections.keys())
-    {
+    foreach(QTcpSocket* socket, connections.keys()) {
         qDebug() << this << "closing socket" << socket;
-        removeSocket(socket);
+        remove_socket(socket);
     }
 
     qDebug() << this << "finishing";
@@ -115,9 +113,9 @@ try {
     qDebug() << this << "clients = " << connections.count();
 
     connect(connections[handle].get_socket(), &QTcpSocket::disconnected,
-            this, &Tcp_connections::disconnected);
+            this, &Tcp_connections::disconnected_cb);
     connect(connections[handle].get_socket(), static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),
-            this, &Tcp_connections::error);
+            this, &Tcp_connections::error_cb);
 
 
     emit socket->connected();

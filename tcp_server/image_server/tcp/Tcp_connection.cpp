@@ -1,3 +1,5 @@
+//------------------------------------------------------------------------------
+
 #include "Tcp_connection.hpp"
 
 //------------------------------------------------------------------------------
@@ -9,6 +11,22 @@ Tcp_connecton::Tcp_connecton(qintptr handle, QObject *parent)
     if(!up_socket->setSocketDescriptor(handle))
         throw Bad_tcp_connection();
 
+    in.setDevice(up_socket.get());
+    in.setVersion(QDataStream::Qt_4_0);
+
+    connect(up_socket.get(), &QTcpSocket::connected,
+            this, &Tcp_connecton::connected_cb);
+    connect(up_socket.get(), &QTcpSocket::disconnected,
+            this, &Tcp_connecton::disconnected_cb);
+    connect(up_socket.get(), &QTcpSocket::readyRead,
+            this, &Tcp_connecton::ready_read_cb);
+    connect(up_socket.get(), &QTcpSocket::bytesWritten,
+            this, &Tcp_connecton::bytes_written_cb);
+    connect(up_socket.get(), &QTcpSocket::stateChanged,
+            this, &Tcp_connecton::state_changed_cb);
+    connect(up_socket.get(), static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),
+            this, &Tcp_connecton::error_cb);
+
     qDebug() << this << "Created";
 }
 
@@ -17,22 +35,6 @@ Tcp_connecton::Tcp_connecton(qintptr handle, QObject *parent)
 Tcp_connecton::~Tcp_connecton()
 {
     qDebug() << this << "Destroyed";
-}
-
-//------------------------------------------------------------------------------
-
-void Tcp_connecton::set_socket(QTcpSocket* socket)
-{
-    up_socket = socket;
-    in.setDevice(socket);
-    in.setVersion(QDataStream::Qt_4_0);
-    connect(up_socket,&QTcpSocket::connected_cb, this, &Tcp_connecton::connected_cb);
-    connect(up_socket,&QTcpSocket::disconnected_cb, this, &Tcp_connecton::disconnected_cb);
-    connect(up_socket,&QTcpSocket::readyRead, this, &Tcp_connecton::ready_read_cb);
-    connect(up_socket,&QTcpSocket::bytesWritten, this, &Tcp_connecton::bytes_written_cb);
-    connect(up_socket,&QTcpSocket::stateChanged, this, &Tcp_connecton::state_changed_cb);
-    connect(up_socket,static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),
-            this,&Tcp_connecton::error);
 }
 
 //------------------------------------------------------------------------------
@@ -56,7 +58,7 @@ void Tcp_connecton::connected_cb()
 void Tcp_connecton::disconnected_cb()
 {
     if(!sender()) return;
-    qDebug() << this << " disconnected_cb " << getSocket();
+    qDebug() << this << " disconnected_cb " << get_socket();
 }
 
 //------------------------------------------------------------------------------
@@ -64,7 +66,7 @@ void Tcp_connecton::disconnected_cb()
 void Tcp_connecton::ready_read_cb()
 {
     if(!sender()) return;
-    QTcpSocket* socket = getSocket();
+    QTcpSocket* socket = get_socket();
     if(!socket) return;
 
     qDebug() << this << " readyRead " << socket;
@@ -112,7 +114,7 @@ void Tcp_connecton::ready_read_cb()
 void Tcp_connecton::bytesWritten(qint64 bytes)
 {
     if(!sender()) return;
-    qDebug() << this << " bytesWritten " << getSocket() << " number of bytes = " << bytes;
+    qDebug() << this << " bytesWritten " << get_socket() << " number of bytes = " << bytes;
 }
 
 //------------------------------------------------------------------------------
@@ -120,7 +122,7 @@ void Tcp_connecton::bytesWritten(qint64 bytes)
 void Tcp_connecton::state_changed_cb(QAbstractSocket::SocketState socketState)
 {
     if(!sender()) return;
-    qDebug() << this << " stateChanged " << getSocket() << " state = " << socketState;
+    qDebug() << this << " stateChanged " << get_socket() << " state = " << socketState;
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +130,7 @@ void Tcp_connecton::state_changed_cb(QAbstractSocket::SocketState socketState)
 void Tcp_connecton::error(QAbstractSocket::SocketError socketError)
 {
     if(!sender()) return;
-    qDebug() << this << " error " << getSocket() << " error = " << socketError;
+    qDebug() << this << " error " << get_socket() << " error = " << socketError;
 }
 
 //------------------------------------------------------------------------------
