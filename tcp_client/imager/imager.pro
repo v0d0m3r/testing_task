@@ -12,7 +12,8 @@ HEADERS += \
     imager_lib/Resize_image_widget.hpp \
     imager_lib/Transmit_image_dialog.hpp \
     ../../common_lib/Common_facilities.hpp \
-    ../../common_lib/Protocol.hpp
+    ../../common_lib/Protocol.hpp \
+    Image_viewer.hpp
 
 
 SOURCES += \    
@@ -21,5 +22,6 @@ SOURCES += \
     imager_lib/Resize_image_widget.cpp \
     imager_lib/Transmit_image_dialog.cpp \
     ../../common_lib/Common_facilities.cpp \
-    ../../common_lib/Protocol.cpp
+    ../../common_lib/Protocol.cpp \
+    Image_viewer.cpp
 

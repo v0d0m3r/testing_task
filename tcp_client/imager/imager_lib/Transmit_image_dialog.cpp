@@ -147,7 +147,7 @@ Transmit_image_dialog::Transmit_image_dialog(const QImage& image,
 void Transmit_image_dialog::send_image_cb()
 {
     content.ref().send_image_button.ref().setEnabled(false);
-
+    //tcp_socket.ref().abort();
     tcp_socket.ref().connectToHost(content.ref().host_combo.ref().currentText(),
                                    content.ref().port_ledit.ref().text().toInt());
 
