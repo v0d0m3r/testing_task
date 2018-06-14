@@ -6,7 +6,7 @@
 //------------------------------------------------------------------------------
 // Local
 #include "Image_viewer.hpp"
-#include "../imager_lib/Transmit_image_dialog.hpp"
+#include "imager_lib/Transmit_image_dialog.hpp"
 
 //------------------------------------------------------------------------------
 

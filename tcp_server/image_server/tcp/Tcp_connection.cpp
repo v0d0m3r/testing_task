@@ -94,9 +94,7 @@ void Tcp_connecton::ready_read_cb()
             qDebug("This command is not exist.");
             break;
         }
-    }
-    if (!in.commitTransaction())
-        return;
+    }    
 
     QDataStream out(psocket.get());
     out << answer;

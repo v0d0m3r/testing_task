@@ -15,8 +15,6 @@ HEADERS += \
 
 
 SOURCES += \
-    ../../common_lib/Protocol.cpp \
-    ../../common_lib/Common_facilities.cpp \
     main.cpp \
     Tcp_server_dialog.cpp
 

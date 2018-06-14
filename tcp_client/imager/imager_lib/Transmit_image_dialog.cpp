@@ -208,9 +208,9 @@ void Transmit_image_dialog::display_error_cb(QAbstractSocket::SocketError socket
                                     "host name and port settings."));
         break;
     case QAbstractSocket::ConnectionRefusedError:
-        QMessageBox::information(this, tr("Transmit_image_dialog"),
+        QMessageBox::information(this, tr("Transmiti mage dialog"),
                                  tr("The connection was refused by the peer. "
-                                    "Make sure the fortune server is running, "
+                                    "Make sure the image server is running, "
                                     "and check that the host name and port "
                                     "settings are correct."));
         break;
@@ -220,6 +220,7 @@ void Transmit_image_dialog::display_error_cb(QAbstractSocket::SocketError socket
                                  .arg(tcp_socket.ref().errorString()));
     }
 
+    content.ref().status_label.ref().setText(tr("Try to send again!"));
     content.ref().send_image_button.ref().setEnabled(true);
 }
 

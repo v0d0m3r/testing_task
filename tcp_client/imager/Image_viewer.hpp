@@ -10,8 +10,8 @@
 
 //------------------------------------------------------------------------------
 // Local
-#include "../imager_lib/Transmit_image_dialog.hpp"
-#include "../imager_lib/Resize_image_dialog.hpp"
+#include "imager_lib/Transmit_image_dialog.hpp"
+#include "imager_lib/Resize_image_dialog.hpp"
 
 //------------------------------------------------------------------------------
 
