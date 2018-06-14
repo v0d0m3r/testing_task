@@ -1,13 +1,10 @@
 //------------------------------------------------------------------------------
-
+// Qt
 #include <QApplication>
 #include <QCommandLineParser>
 
 //------------------------------------------------------------------------------
-
-//#include "imageviewer.hpp"
-#include "./imager_lib/Resize_image_dialog.hpp"
-#include "./imager_lib/Transmit_image_dialog.hpp"
+// Local
 #include "Image_viewer.hpp"
 
 //------------------------------------------------------------------------------
@@ -16,21 +13,12 @@ using namespace Imager;
 
 //------------------------------------------------------------------------------
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-    QApplication app(argc, argv);
-    /*QGuiApplication::setApplicationDisplayName(ImageViewer::tr("Image Viewer"));
-    QCommandLineParser commandLineParser;
-    commandLineParser.addHelpOption();
-    commandLineParser.addPositionalArgument(ImageViewer::tr("[file]"), ImageViewer::tr("Image file to open."));
-    commandLineParser.process(QCoreApplication::arguments());*/
-    Image_viewer imageViewer;
-    //imageViewer.set_original_size(QSize(123,233));
-    /*if (!commandLineParser.positionalArguments().isEmpty()
-        && !imageViewer.loadFile(commandLineParser.positionalArguments().front())) {
-        return -1;
-    }*/
-    imageViewer.show();
+    QApplication app(argc, argv);    
+    Image_viewer w;
+
+    w.show();
     return app.exec();
 }
 

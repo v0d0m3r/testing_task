@@ -4,6 +4,10 @@
 
 //------------------------------------------------------------------------------
 
+namespace Receiver {
+
+//------------------------------------------------------------------------------
+
 Tcp_connecton::Tcp_connecton(qintptr handle, QObject *parent)
     : QObject(parent),
       psocket(new QTcpSocket(), [] (QTcpSocket* p) { p->deleteLater(); })
@@ -94,8 +98,8 @@ void Tcp_connecton::ready_read_cb()
     if (!in.commitTransaction())
         return;
 
-    /*QDataStream out(psocket.get());
-    out << answer;*/
+    QDataStream out(psocket.get());
+    out << answer;
 }
 
 //------------------------------------------------------------------------------
@@ -131,3 +135,6 @@ void Tcp_connecton::error_cb(QAbstractSocket::SocketError socket_error)
 
 //------------------------------------------------------------------------------
 
+}   // Receiver
+
+//------------------------------------------------------------------------------

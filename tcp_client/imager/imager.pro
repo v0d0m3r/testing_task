@@ -21,7 +21,5 @@ SOURCES += \
     imager_lib/Resize_image_dialog.cpp \
     imager_lib/Resize_image_widget.cpp \
     imager_lib/Transmit_image_dialog.cpp \
-    ../../common_lib/Common_facilities.cpp \
-    ../../common_lib/Protocol.cpp \
     Image_viewer.cpp
 

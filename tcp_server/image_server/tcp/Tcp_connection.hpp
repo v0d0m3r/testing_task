@@ -4,18 +4,19 @@
 #define TCP_CONNECTION_HPP
 
 //------------------------------------------------------------------------------
-
+// Qt
 #include <QObject>
 #include <QDebug>
 #include <QTcpSocket>
-#include <memory>
 #include <QtCore>
-#include <QBuffer>
-#include <QImage>
+
+//------------------------------------------------------------------------------
+// Local
+#include "../../common_lib/Protocol.hpp"
 
 //------------------------------------------------------------------------------
 
-#include "../../common_lib/Protocol.hpp"
+namespace Receiver {
 
 //------------------------------------------------------------------------------
 
@@ -47,6 +48,10 @@ private:
     deleted_unique_ptr<QTcpSocket> psocket;
     QDataStream in;
 };
+
+//------------------------------------------------------------------------------
+
+}   // Receiver
 
 //------------------------------------------------------------------------------
 

@@ -9,7 +9,7 @@
 #include <QImage>
 
 //------------------------------------------------------------------------------
-// local
+// Local
 #include "../imager_lib/Transmit_image_dialog.hpp"
 #include "../imager_lib/Resize_image_dialog.hpp"
 
@@ -63,7 +63,6 @@ private slots:
     void normal_size_cb();
     void fit_to_window_cb();
     void transmission_cb();
-
     void about_cb();
 
 private:

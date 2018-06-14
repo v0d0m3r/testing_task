@@ -18,7 +18,7 @@
 #include <QMessageBox>
 
 //------------------------------------------------------------------------------
-// local
+// Local
 #include "Transmit_image_dialog.hpp"
 #include "../../common_lib/Protocol.hpp"
 
@@ -145,9 +145,12 @@ Transmit_image_dialog::Transmit_image_dialog(const QImage& image,
 void Transmit_image_dialog::send_image_cb()
 {
     content.ref().send_image_button.ref().setEnabled(false);
-    //tcp_socket.ref().abort();
+    tcp_socket.ref().abort();
     tcp_socket.ref().connectToHost(content.ref().host_combo.ref().currentText(),
                                    content.ref().port_ledit.ref().text().toInt());
+
+    if (!tcp_socket.ref().waitForConnected())
+        return;
 
     QByteArray block;
     QBuffer buff(&block);
@@ -200,19 +203,19 @@ void Transmit_image_dialog::display_error_cb(QAbstractSocket::SocketError socket
     case QAbstractSocket::RemoteHostClosedError:
         break;
     case QAbstractSocket::HostNotFoundError:
-        QMessageBox::information(this, tr("Fortune Transmit_image_dialog"),
+        QMessageBox::information(this, tr("Transmit image dialog"),
                                  tr("The host was not found. Please check the "
                                     "host name and port settings."));
         break;
     case QAbstractSocket::ConnectionRefusedError:
-        QMessageBox::information(this, tr("Fortune Transmit_image_dialog"),
+        QMessageBox::information(this, tr("Transmit_image_dialog"),
                                  tr("The connection was refused by the peer. "
                                     "Make sure the fortune server is running, "
                                     "and check that the host name and port "
                                     "settings are correct."));
         break;
     default:
-        QMessageBox::information(this, tr("Fortune Transmit_image_dialog"),
+        QMessageBox::information(this, tr("Transmit image dialog"),
                                  tr("The following error occurred: %1.")
                                  .arg(tcp_socket.ref().errorString()));
     }

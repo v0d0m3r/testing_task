@@ -1,12 +1,12 @@
 //------------------------------------------------------------------------------
 
-#include "Resize_image_dialog.hpp"
-
-//------------------------------------------------------------------------------
-
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
 #include <QPushButton>
+
+//------------------------------------------------------------------------------
+
+#include "Resize_image_dialog.hpp"
 
 //------------------------------------------------------------------------------
 
@@ -83,7 +83,8 @@ QSize Resize_image_dialog::size() const
 
 void Resize_image_dialog::width_changed_cb(int width)
 {
-    // Update width percentage to match width, only if this was a manual adjustment
+    // Обновляем width_percent для сопоставления с
+    // width, если это была ручная настройка
     if (!update_from_size_or_percentage && !update_from_ratio) {
         update_from_size_or_percentage = true;
         content.ref().width_percent_spin_box.ref().setValue((double(width) / orig_size.width()) * 100);
@@ -93,7 +94,8 @@ void Resize_image_dialog::width_changed_cb(int width)
     if (!content.ref().keep_aspect_check_box.ref().isChecked() || update_from_ratio)
         return;
 
-    // Update height to keep ratio, only if ratio locked and this was a manual adjustment
+    // Обновляем height, чтобы сохранить соотношение, только
+    // если соотношение было заблокировано и это была ручная настройка
     update_from_ratio = true;
     content.ref().height_spin_box.ref().setValue(orig_size.height() * width / orig_size.width());
     update_from_ratio = false;
@@ -103,7 +105,7 @@ void Resize_image_dialog::width_changed_cb(int width)
 
 void Resize_image_dialog::height_changed_cb(int height)
 {
-    // Update height percentage to match height, only if this was a manual adjustment
+    // Обновляем  height_percent чтобы сопоставить с width
     if (!update_from_size_or_percentage && !update_from_ratio) {
         update_from_size_or_percentage = true;
         content.ref().height_percent_spin_box.ref().setValue((double(height) / orig_size.height()) * 100);
@@ -113,7 +115,8 @@ void Resize_image_dialog::height_changed_cb(int height)
     if (!content.ref().keep_aspect_check_box.ref().isChecked() || update_from_ratio)
         return;
 
-    // Update width to keep ratio, only if ratio locked and this was a manual adjustment
+    // Обновить width, чтобы сохранить соотношение, только
+    // если соотношение было заблокировано и это была ручная настройка
     update_from_ratio = true;
     content.ref().width_spin_box.ref().setValue(orig_size.width() * height / orig_size.height());
     update_from_ratio = false;
@@ -123,7 +126,7 @@ void Resize_image_dialog::height_changed_cb(int height)
 
 void Resize_image_dialog::width_percent_changed_cb(double width_percent)
 {
-    // Update width to match width percentage, only if this was a manual adjustment
+    // Обновляем width чтобы сопоставить с width_percent
     if (!update_from_size_or_percentage && !update_from_ratio) {
         update_from_size_or_percentage = true;
         content.ref().width_spin_box.ref().setValue((width_percent / 100) * orig_size.width());
@@ -134,7 +137,8 @@ void Resize_image_dialog::width_percent_changed_cb(double width_percent)
         return;
     }
 
-    // Keep height percentage in sync with width percentage, only if ratio locked and this was a manual adjustment
+    // Сохраняйте height_percent в синхронизации с width_percent,
+    // только если соотношение заблокировано
     update_from_ratio = true;
     content.ref().height_percent_spin_box.ref().setValue(content.ref().width_percent_spin_box.ref().value());
     update_from_ratio = false;
@@ -144,7 +148,7 @@ void Resize_image_dialog::width_percent_changed_cb(double width_percent)
 
 void Resize_image_dialog::height_percent_changed_cb(double height_percent)
 {
-    // Update height to match height percentage, only if this was a manual adjustment
+    // Обновляем height, чтобы сопоставить с height_percent
     if (!update_from_size_or_percentage && !update_from_ratio) {
         update_from_size_or_percentage = true;
         content.ref().height_spin_box.ref().setValue((height_percent / 100) * orig_size.height());
@@ -154,7 +158,8 @@ void Resize_image_dialog::height_percent_changed_cb(double height_percent)
     if (!content.ref().keep_aspect_check_box.ref().isChecked() || update_from_ratio)
         return;
 
-    // Keep height percentage in sync with width percentage, only if ratio locked and this was a manual adjustment
+    // Сохраняйте height_percent в синхронизации с width_percent,
+    // только если соотношение заблокировано и это была ручная настройка
     update_from_ratio = true;
     content.ref().width_percent_spin_box.ref().setValue(content.ref().height_percent_spin_box.ref().value());
     update_from_ratio = false;
@@ -223,6 +228,6 @@ Compression_info Compress_image_dialog::compression_info() const
 
 //------------------------------------------------------------------------------
 
-}
+}   // Imager
 
 //------------------------------------------------------------------------------

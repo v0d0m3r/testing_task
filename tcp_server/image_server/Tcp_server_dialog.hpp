@@ -1,46 +1,51 @@
 //------------------------------------------------------------------------------
 
-#ifndef PROTOCOL_HPP
-#define PROTOCOL_HPP
+#ifndef TCP_SERVER_DIALOG_HPP
+#define TCP_SERVER_DIALOG_HPP
+
+//------------------------------------------------------------------------------
+// Qt
+#include <QDialog>
 
 //------------------------------------------------------------------------------
 // Local
-#include "Common_facilities.hpp"
-
-//------------------------------------------------------------------------------
-// Константы управляющих кодов
-constexpr size_t manage_code_count = 3;
-
-enum class Mng_code {
-    stx, ack, nak
-};
-
-constexpr std::array<Byte, manage_code_count> manage_codes {
-    0x02, 0x06, 0x15
-};
+#include "Tcp_server.hpp"
 
 //------------------------------------------------------------------------------
 
-enum class Imager_codes {
-    send_image
-};
-
-//------------------------------------------------------------------------------
-
-constexpr std::array<Byte, 1> imager_comand_codes {
-    0xf1
-};
-
-//------------------------------------------------------------------------------
-
-template<class T>
-constexpr int to_int(T t)
-{
-    return static_cast<int>(t);
+namespace Ui {
+class Tcp_server_dialog;
 }
 
 //------------------------------------------------------------------------------
 
-#endif // PROTOCOL_HPP
+namespace Receiver {
+
+//------------------------------------------------------------------------------
+
+class Tcp_server_dialog : public QDialog {
+    Q_OBJECT
+public:
+    explicit Tcp_server_dialog(QWidget* parent = 0);
+    ~Tcp_server_dialog();
+
+private slots:
+    void start_cb();
+    void stop_cb();
+
+private:
+    Tcp_server image_server;
+    Ui::Tcp_server_dialog* ui;
+
+    void set_started(bool started);
+};
+
+//------------------------------------------------------------------------------
+
+}   // Receiver
+
+//------------------------------------------------------------------------------
+
+#endif // TCP_SERVER_DIALOG_HPP
 
 //------------------------------------------------------------------------------
