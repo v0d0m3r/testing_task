@@ -32,9 +32,9 @@ public:
     virtual qint64 port();
 
 protected:
-    QThread* thread;
-    Tcp_connections* connections;
-    virtual void incomingConnection(qintptr descriptor);
+    QThread* thread = nullptr;
+    Tcp_connections* connections = nullptr;
+    virtual void incomingConnection(qintptr descriptor) override;
     virtual void accept(qintptr descriptor);
 
 signals:

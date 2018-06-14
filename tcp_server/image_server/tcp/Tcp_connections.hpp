@@ -18,8 +18,11 @@
 
 //------------------------------------------------------------------------------
 
-class Tcp_connections : public QObject
-{
+using Connection_tb = std::map<QTcpSocket*, std::unique_ptr<Tcp_connecton>>;
+
+//------------------------------------------------------------------------------
+
+class Tcp_connections : public QObject {
     Q_OBJECT
 public:
     explicit Tcp_connections(QObject* parent = nullptr);
@@ -28,7 +31,7 @@ public:
     virtual int count() const;
 
 protected:
-    QMap<qintptr, Tcp_connecton> connections;
+    Connection_tb connections;
     void remove_socket(QTcpSocket* socket);
 
 signals:
@@ -42,7 +45,7 @@ protected slots:
 public slots:
     void start_cb();
     void quit_cb();
-    void accept_cb(qintptr handle, Tcp_connecton *connection);
+    void accept_cb(qintptr handle);
 };
 
 //------------------------------------------------------------------------------

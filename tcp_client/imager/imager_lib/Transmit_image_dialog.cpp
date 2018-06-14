@@ -76,11 +76,9 @@ Transmit_image_widget::Transmit_image_widget(QWidget* parent)
 //------------------------------------------------------------------------------
 
 Transmit_image_dialog::Transmit_image_dialog(const QImage& image,
-                                             const QString& name_image,
                                              QWidget* parent)
     : QDialog(parent),
       img(image),
-      name_img(name_image),
       content(new Transmit_image_widget()),
       tcp_socket(new QTcpSocket()),
       network_session(nullptr)
@@ -153,17 +151,17 @@ void Transmit_image_dialog::send_image_cb()
 
     QByteArray block;
     QBuffer buff(&block);
-    img.save(&buff);
+    buff.open(QIODevice::WriteOnly);
+    img.save(&buff, "png");
 
     QDataStream out(&tcp_socket.ref());
     out.setVersion(QDataStream::Qt_4_0);
 
-    qint8 compress_lvl = static_cast<qint8>(compression_level());
+    qDebug() << block.size();
+
     out << manage_codes[to_int(Mng_code::stx)]
         << imager_comand_codes[to_int(Imager_codes::send_image)]
-        << compress_lvl
-        << name_img
-        << qCompress(block, compress_lvl);
+        << qCompress(std::move(block), compression_level());
 
     content.ref().status_label.ref().setText(tr("Process sending..."));
 }

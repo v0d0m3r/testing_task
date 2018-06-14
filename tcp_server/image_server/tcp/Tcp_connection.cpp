@@ -6,43 +6,28 @@
 
 Tcp_connecton::Tcp_connecton(qintptr handle, QObject *parent)
     : QObject(parent),
-      up_socket(std::make_unique<QTcpSocket>())
+      psocket(new QTcpSocket(), [] (QTcpSocket* p) { p->deleteLater(); })
 {
-    if(!up_socket->setSocketDescriptor(handle))
+    if(!psocket->setSocketDescriptor(handle))
         throw Bad_tcp_connection();
 
-    in.setDevice(up_socket.get());
+    in.setDevice(psocket.get());
     in.setVersion(QDataStream::Qt_4_0);
 
-    connect(up_socket.get(), &QTcpSocket::connected,
+    connect(psocket.get(), &QTcpSocket::connected,
             this, &Tcp_connecton::connected_cb);
-    connect(up_socket.get(), &QTcpSocket::disconnected,
+    connect(psocket.get(), &QTcpSocket::disconnected,
             this, &Tcp_connecton::disconnected_cb);
-    connect(up_socket.get(), &QTcpSocket::readyRead,
+    connect(psocket.get(), &QTcpSocket::readyRead,
             this, &Tcp_connecton::ready_read_cb);
-    connect(up_socket.get(), &QTcpSocket::bytesWritten,
+    connect(psocket.get(), &QTcpSocket::bytesWritten,
             this, &Tcp_connecton::bytes_written_cb);
-    connect(up_socket.get(), &QTcpSocket::stateChanged,
+    connect(psocket.get(), &QTcpSocket::stateChanged,
             this, &Tcp_connecton::state_changed_cb);
-    connect(up_socket.get(), static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),
+    connect(psocket.get(), static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),
             this, &Tcp_connecton::error_cb);
 
     qDebug() << this << "Created";
-}
-
-//------------------------------------------------------------------------------
-
-Tcp_connecton::~Tcp_connecton()
-{
-    qDebug() << this << "Destroyed";
-}
-
-//------------------------------------------------------------------------------
-
-QTcpSocket* Tcp_connecton::get_socket()
-{
-    if(!sender()) return 0;
-    return static_cast<QTcpSocket*>(sender());
 }
 
 //------------------------------------------------------------------------------
@@ -58,7 +43,7 @@ void Tcp_connecton::connected_cb()
 void Tcp_connecton::disconnected_cb()
 {
     if(!sender()) return;
-    qDebug() << this << " disconnected_cb " << get_socket();
+    qDebug() << this << " disconnected_cb " << psocket.get();
 }
 
 //------------------------------------------------------------------------------
@@ -66,71 +51,82 @@ void Tcp_connecton::disconnected_cb()
 void Tcp_connecton::ready_read_cb()
 {
     if(!sender()) return;
-    QTcpSocket* socket = get_socket();
-    if(!socket) return;
-
-    qDebug() << this << " readyRead " << socket;
+    qDebug() << this << " readyRead " << psocket.get();
 
     in.startTransaction();
 
     Byte stx;
     in >> stx;
-
+    Byte answer = manage_codes[to_int(Mng_code::nak)];
     if (stx == manage_codes[to_int(Mng_code::stx)]) {
-        Code_comm cmd_code;
+        Byte cmd_code;
         in >> cmd_code;
-
         switch (cmd_code) {
-        case Code_comm::image_exch:
+        case imager_comand_codes[to_int(Imager_codes::send_image)]:
         {
-            QString name;
-            QByteArray buffer;
-            in >> name >> buffer;
+            QByteArray block;
+            in >> block;
 
-            QImage image;
-            image.loadFromData(std::move(buffer));
-            if (image.isNull()) {
-                socket->close();
-                qDebug("The image is null. Something failed.");
-            }
-            else {
-
-                image.save(name, "JPG", 100);
-            }
-        }
-        default:
             if (!in.commitTransaction())
                 return;
-            socket->close();
+
+            qDebug() << block.size();
+
+            QImage image;
+            image.loadFromData(qUncompress(std::move(block)));
+            if (image.isNull())
+                qDebug("The image is null. Something failed.");
+            else {
+                QString path = "test.jpg";
+                for  (int counter = 0; QFile::exists(path); ++counter)
+                    path = QString("test%1.jpg").arg(QString::number(counter));
+
+                image.save(path);
+                answer = manage_codes[to_int(Mng_code::ack)];
+            }
+            break;
+        }
+        default:
+            qDebug("This command is not exist.");
             break;
         }
     }
     if (!in.commitTransaction())
         return;
+
+    /*QDataStream out(psocket.get());
+    out << answer;*/
 }
 
 //------------------------------------------------------------------------------
 
-void Tcp_connecton::bytesWritten(qint64 bytes)
+void Tcp_connecton::bytes_written_cb(qint64 bytes)
 {
     if(!sender()) return;
-    qDebug() << this << " bytesWritten " << get_socket() << " number of bytes = " << bytes;
+    qDebug() << this
+             << " bytesWritten "      << psocket.get()
+             << " number of bytes = " << bytes;
+    psocket->close();
 }
 
 //------------------------------------------------------------------------------
 
-void Tcp_connecton::state_changed_cb(QAbstractSocket::SocketState socketState)
+void Tcp_connecton::state_changed_cb(QAbstractSocket::SocketState socket_state)
 {
     if(!sender()) return;
-    qDebug() << this << " stateChanged " << get_socket() << " state = " << socketState;
+    qDebug() << this
+             << " stateChanged " << psocket.get()
+             << " state = "      << socket_state;
 }
 
 //------------------------------------------------------------------------------
 
-void Tcp_connecton::error(QAbstractSocket::SocketError socketError)
+void Tcp_connecton::error_cb(QAbstractSocket::SocketError socket_error)
 {
     if(!sender()) return;
-    qDebug() << this << " error " << get_socket() << " error = " << socketError;
+    qDebug() << this
+             << " error "   << psocket.get()
+             << " error = " << socket_error;
 }
 
 //------------------------------------------------------------------------------

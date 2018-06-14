@@ -24,7 +24,7 @@ Tcp_server::~Tcp_server()
 
 bool Tcp_server::listen(const QHostAddress& address, quint16 port)
 {
-    if(!QTcpServer::listen(address,port)) return false;
+    if(!QTcpServer::listen(address, port)) return false;
 
     thread = new QThread(this);
     connections = new Tcp_connections();
@@ -59,13 +59,8 @@ void Tcp_server::close()
 qint64 Tcp_server::port()
 {
     if(isListening())
-    {
         return this->serverPort();
-    }
-    else
-    {
-        return 1000;
-    }
+    return 1000;
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +69,6 @@ void Tcp_server::incomingConnection(qintptr descriptor)
 {
     qDebug() << this << "attempting to accept connection" << descriptor;
     accept(descriptor);
-
 }
 
 //------------------------------------------------------------------------------
@@ -97,7 +91,7 @@ void Tcp_server::complete_cb()
     qDebug() << this << "complete_cb called, destroying thread";
     delete connections;
 
-    qDebug() << this << "Quitting thread";
+    qDebug() << this << "quitting thread";
     thread->quit();
     thread->wait();
 

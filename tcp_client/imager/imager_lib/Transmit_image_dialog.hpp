@@ -40,9 +40,8 @@ struct Transmit_image_widget : public QWidget {
 class Transmit_image_dialog : public QDialog {
     Q_OBJECT
 public:
-    Transmit_image_dialog(const QImage& image,
-                          const QString& name_image,
-                          QWidget* parent = nullptr);
+    explicit Transmit_image_dialog(const QImage& image,
+                                   QWidget* parent = nullptr);
 
     int compression_level() const
         { return content.ref().compress_spin_box.ref().value(); }
@@ -56,7 +55,6 @@ private slots:
 
 private:
     const QImage& img;
-    const QString& name_img;
 
     Ref_unique_ptr<Transmit_image_widget> content;
 

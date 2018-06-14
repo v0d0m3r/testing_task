@@ -164,7 +164,7 @@ void Image_viewer::save_as_cb()
 void Image_viewer::transmission_cb()
 {
     Q_ASSERT(image_label->pixmap());
-    Transmit_image_dialog d(image, curr_name_image);
+    Transmit_image_dialog d(image);
     d.exec();
 }
 
